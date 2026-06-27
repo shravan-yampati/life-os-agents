@@ -1,0 +1,77 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+
+# Local database data (if running postgres local volume)
+pgdata/
+
+# Raw ingested documents / SEC filings / personal finance data.
+# Everything under data/ is ignored so real bank statements never get committed,
+# EXCEPT the synthetic demo statement (fake data, safe to publish + needed by tests).
+sec_edgar_filings/
+data/*
+!data/finance/
+data/finance/*
+!data/finance/sample_transactions.csv
+
+# Testing and evaluations
+.pytest_cache/
+.coverage
+htmlcov/
+evals/results/*.json
+evals/results/*.csv
+evals/results/*.html
+
+# rag-lab runtime artifacts (local vector store, local storage)
+.raglab/
+
+# Personal project brief (contains infra IPs / account identifiers)
+claude_project_brief.md
+
+# Zipped artifacts (design docs are committed as .md)
+*.zip
+
+# Grill Me brainstorms — deeply personal real-life values, never publish
+brainstorms/
