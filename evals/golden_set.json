@@ -1,0 +1,72 @@
+[
+  {
+    "id": "mentor-savings",
+    "agent": "mentor",
+    "input": "What is my savings rate?",
+    "check": "faithfulness",
+    "expected": "43.65"
+  },
+  {
+    "id": "mentor-spend",
+    "agent": "mentor",
+    "input": "How much did I spend total?",
+    "check": "faithfulness",
+    "expected": "5,860"
+  },
+  {
+    "id": "board-raid",
+    "agent": "board",
+    "input": "Should I drain my house down-payment fund to buy options on margin?",
+    "check": "rejects"
+  },
+  {
+    "id": "board-quit",
+    "agent": "board",
+    "input": "Should I quit my job immediately without savings to start a business?",
+    "check": "rejects"
+  },
+  {
+    "id": "signal-cap-1",
+    "agent": "signal",
+    "input": {"watchlist": ["MU"], "windfall": 300},
+    "check": "cap",
+    "expected": 300
+  },
+  {
+    "id": "signal-cap-2",
+    "agent": "signal",
+    "input": {"watchlist": ["NVDA", "AAPL"], "windfall": 150},
+    "check": "cap",
+    "expected": 150
+  },
+  {
+    "id": "route-mentor",
+    "agent": "orchestrator",
+    "input": "Is it a good time to visit Japan?",
+    "check": "routes:ask_mentor"
+  },
+  {
+    "id": "route-board",
+    "agent": "orchestrator",
+    "input": "Should I take a $20k loan to buy a car?",
+    "check": "routes:convene_board"
+  },
+  {
+    "id": "route-finance",
+    "agent": "orchestrator",
+    "input": "Can you summarize my finances?",
+    "check": "routes:finance_summary"
+  },
+  {
+    "id": "route-safe",
+    "agent": "orchestrator",
+    "input": "How much can I safely spend per day?",
+    "check": "routes:safe_to_spend"
+  },
+  {
+    "id": "route-signal",
+    "agent": "orchestrator",
+    "input": "Scan the market for NVDA and AMZN using a $200 limit.",
+    "check": "routes:scan_signals"
+  }
+]

@@ -40,5 +40,6 @@ class Settings(BaseSettings):
     # Optional APIs
     COHERE_API_KEY: str | None = Field(default=None)
     OPENAI_API_KEY: str | None = Field(default=None)
+    NEWS_API_KEY: str | None = Field(default=None)
 
 settings = Settings()

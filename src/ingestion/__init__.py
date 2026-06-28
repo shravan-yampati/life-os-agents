@@ -1,1 +1,1 @@
-# RAG-Lab ingestion module.
+"""Document ingestion and tracking module."""
