@@ -26,13 +26,15 @@ the system is a **mesh of specialized agents**, each with one job:
 
 | Agent | Role | Status |
 |---|---|---|
+| **Orchestrator** | The front door — a function-calling router that picks the right agent for any request | ✅ |
 | **Archivist** | Ingests dropped documents → text → vector memory (RAG) | ✅ |
 | **Accountant** | Parses statements, categorizes, computes **exact** finance math | ✅ |
 | **Mentor** | Conversational Q&A grounded in your numbers + values | ✅ |
 | **Board of Directors** | 5-agent debate that rules on major life decisions | ✅ (centerpiece) |
-| **Expense Sentinel** | Ambient ADK agent: screen → route → human approval (Cloud Run) | ✅ (companion) |
-| **Daily Guide** | Proactive daily safe-to-spend + one nudge | 🔜 roadmap |
-| **Signal Agent** | Public-catalyst alerts for opportunistic windfall plays | 🔜 roadmap |
+| **Daily Guide** | Proactive daily safe-to-spend + a personalized nudge | ✅ |
+| **Signal Agent** | Public-catalyst alerts for opportunistic windfall plays (signals only) | ✅ |
+| **Expense Sentinel** | Ambient ADK agent: screen → route → human approval (Cloud Run + Eventarc) | ✅ |
+| **MCP server** | Exposes Life OS tools over the Model Context Protocol | ✅ |
 
 ## The centerpiece: Board of Directors
 
@@ -76,14 +78,29 @@ python -m src.agents.board "Should I take a $20K loan for a vacation?"
    grounded chat     5-agent debate + ruling   ambient screen → approve
 ```
 
+## We measured it (evaluation)
+
+Most agent demos assert "it works." We built an **evaluation harness** (`evals/`) that
+*scores* the agents against a golden set — and re-runs on every change:
+
+| Metric | Proves | Result |
+|---|---|---|
+| Faithfulness | the Mentor cites the *exact* computed numbers | 2/2 |
+| Constraint-adherence | the Board **rejects** non-negotiable violations | 2/2 |
+| Safety (cap) | the Signal Agent never exceeds the windfall budget | 2/2 |
+| Routing | the Orchestrator routes to the correct agent | 5/5 |
+| | **Overall** | **11/11** |
+
 ## Course concepts demonstrated
 
 - **Multi-agent systems (ADK)** — the Board's debate + the ADK Expense Sentinel
-- **Security** — deterministic PII / prompt-injection screen before the LLM; secrets in
-  Secret Manager; authenticated Cloud Run
-- **Deployability** — Expense Sentinel deployed to Cloud Run (scale-to-zero)
-- **Agent skills** — `agents-cli` scaffold + deploy
-- **Antigravity** — used to build (see video)
+- **Function-calling / orchestration** — the Orchestrator routes any request to the right agent
+- **Evaluation** — a harness that scores faithfulness, constraint-adherence, safety, routing (**11/11**)
+- **Security** — deterministic PII / prompt-injection screen before the LLM; in-code guardrails
+  (windfall cap, non-negotiables); secrets in Secret Manager; authenticated Cloud Run
+- **Deployability** — Expense Sentinel deployed to Cloud Run, Eventarc-triggered
+- **MCP server** — Life OS tools exposed over the Model Context Protocol
+- **Agent skills** — `agents-cli` scaffold + deploy · built in **Antigravity**
 
 ## Tech stack
 
@@ -101,13 +118,15 @@ uv sync --all-groups
 # 2. Configure
 cp .env.example .env          # for real Gemini, set GOOGLE_API_KEY and CLOUD_PROVIDER=gcp
 
-# 3. Try it
+# 3. Try it — one entry point routes to the right agent
+python -m src.agents.orchestrator "how much did I spend on dining?"    # → routes to Accountant
 python -m src.agents.board  "Should I buy a $40K car now or wait?"     # multi-agent debate
 python -m src.agents.mentor "How am I doing on savings?"               # grounded chat
 python -m src.serving.finance_cli summary data/finance/sample_transactions.csv
 
-# 4. Tests (offline, no key required)
+# 4. Tests (offline, no key) + the evaluation scoreboard (needs a Gemini key)
 .venv/Scripts/python -m pytest tests -q
+python evals/run_eval.py
 ```
 
 > The included `data/finance/sample_transactions.csv` is synthetic. Real statements and
@@ -115,7 +134,8 @@ python -m src.serving.finance_cli summary data/finance/sample_transactions.csv
 
 ## Status
 
-Working end-to-end on synthetic data: ingestion + RAG, finance vertical (parse →
-categorize → analyze → safe-to-spend), the Mentor, and the Board of Directors. The
-Expense Sentinel is deployed to Cloud Run. Daily Guide, Signal Agent, and the Eventarc
-trigger are the next steps. Built one domain at a time — finance first.
+Working end-to-end on synthetic data with **70 passing tests** and an evaluation
+scoreboard of **11/11**. Includes the Orchestrator, Accountant, Mentor, Board of
+Directors, Daily Guide, Signal Agent, an MCP server, and the ambient Expense Sentinel
+deployed to Cloud Run (Eventarc-triggered). Built one domain at a time — finance first;
+health and career are next.
